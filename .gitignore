@@ -22,6 +22,10 @@
 
 # lock file
 bun.lock
+package-lock.json
+
+# inngest
+.inngest
 
 # production
 /build
