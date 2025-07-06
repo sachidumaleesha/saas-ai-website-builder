@@ -12,6 +12,7 @@
 
 # prisma
 /prisma/generated
+/prisma/migrations
 
 # testing
 /coverage
