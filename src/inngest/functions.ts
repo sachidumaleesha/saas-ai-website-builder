@@ -186,6 +186,7 @@ export const codeAgentFunction = inngest.createFunction(
       if (isErorr) {
         return await prisma.message.create({
           data: {
+            projectId: event.data.projectId,
             content: "Something went wrong",
             role: "ASSISTANT",
             type: "ERROR",
@@ -196,6 +197,7 @@ export const codeAgentFunction = inngest.createFunction(
       //save the result to the database
       return await prisma.message.create({
         data: {
+          projectId: event.data.projectId,
           content: "Something went wrong",
           role: "ASSISTANT",
           type: "RESULT",
