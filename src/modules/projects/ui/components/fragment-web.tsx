@@ -20,13 +20,16 @@ export const FragmentWeb = ({ data }: Props) => {
   };
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(data.sandBoxUrl).then(() => {
-      setCopied(true);
-      toast.success("URL copied to clipboard");
-      setTimeout(() => setCopied(false), 2000);
-    }).catch(() => {
-      toast.error("Failed to copy URL");
-    });
+    navigator.clipboard
+      .writeText(data.sandBoxUrl)
+      .then(() => {
+        setCopied(true);
+        toast.success("URL copied to clipboard");
+        setTimeout(() => setCopied(false), 2000);
+      })
+      .catch(() => {
+        toast.error("Failed to copy URL");
+      });
   };
 
   return (
