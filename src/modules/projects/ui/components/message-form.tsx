@@ -26,9 +26,6 @@ export const MessageForm = ({ projectId }: Props) => {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
 
-  const [isFocused, setIsFocused] = useState(false);
-  const [showUsage, setShowUsage] = useState(false);
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -39,6 +36,7 @@ export const MessageForm = ({ projectId }: Props) => {
   const createMessage = useMutation(
     trpc.messages.create.mutationOptions({
       onSuccess: () => {
+        form.reset();
         queryClient.invalidateQueries(
           trpc.messages.getMany.queryOptions({ projectId })
         );
@@ -51,8 +49,16 @@ export const MessageForm = ({ projectId }: Props) => {
     })
   );
 
+  const [isFocused, setIsFocused] = useState(false);
+  const showUsage = false;
+  const isPending = createMessage.isPending;
+  const isButtonDisabled = isPending || !form.formState.isValid; 
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+    await createMessage.mutateAsync({
+      value: values.value,
+      projectId,
+    });
   };
 
   return (
@@ -71,6 +77,7 @@ export const MessageForm = ({ projectId }: Props) => {
           render={({ field }) => (
             <TextareaAutosize
               {...field}
+              disabled={isPending}
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
               minRows={2}
@@ -93,8 +100,18 @@ export const MessageForm = ({ projectId }: Props) => {
             </kbd>
             &nbsp;to submit
           </div>
-          <Button className={cn("size-8 rounded-full")}>
-            <ArrowUpIcon />
+          <Button
+            disabled={isButtonDisabled}
+            className={cn(
+              "size-8 rounded-full",
+              isButtonDisabled && "bg-muted-foreground border"
+            )}
+          >
+            {isPending ? (
+              <Loader2Icon className="size-4 animate-spin" />
+            ) : (
+              <ArrowUpIcon />
+            )}
           </Button>
         </div>
       </form>

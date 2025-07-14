@@ -29,7 +29,8 @@ export const codeAgentFunction = inngest.createFunction(
 
     const terminalTool = createTool({
       name: "terminal",
-      description: "Use the terminal to run commands",
+      description:
+        "Use this tool to run terminal commands, check file structure, install dependencies, or execute any command line operations",
       parameters: z.object({
         command: z.string(),
       }),
@@ -128,7 +129,13 @@ export const codeAgentFunction = inngest.createFunction(
       name: "openAICodeAgent ",
       description: "An expert Coding Agent",
       // system: PROMPT,
-      system: "You are an expert frontend developer",
+      system: `You are an expert frontend developer. You have access to several tools to help you:
+        1. Use the 'terminal' tool to run commands and check the system
+        2. Use the 'createOrUpdateFiles' tool to create or modify files
+        3. Use the 'readFiles' tool to read existing files
+
+        Always use these tools when you need to interact with the file system or run commands. 
+        Start by reading files to understand the current state, then make necessary changes.`,
       model: openai({
         model: "gpt-4o",
       }),
@@ -153,11 +160,15 @@ export const codeAgentFunction = inngest.createFunction(
       agents: [openAiCodeAgent],
       maxIter: 15,
       // defaultState : state,
-      router: async ({ network }) => {
+      router: async ({ network, callCount }) => {
         const summary = network.state.data.summary;
 
+        if (callCount > 5) {
+          return undefined;
+        }
+
         if (summary) {
-          return;
+          return undefined;
         }
         return openAiCodeAgent;
       },
