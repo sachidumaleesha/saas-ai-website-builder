@@ -5,6 +5,7 @@ import { Fragment } from "../../../../../prisma/generated/prisma";
 
 import { Button } from "@/components/ui/button";
 import { Hint } from "@/components/hint";
+import { toast } from "sonner";
 
 interface Props {
   data: Fragment;
@@ -19,9 +20,13 @@ export const FragmentWeb = ({ data }: Props) => {
   };
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(data.sandBoxUrl);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    navigator.clipboard.writeText(data.sandBoxUrl).then(() => {
+      setCopied(true);
+      toast.success("URL copied to clipboard");
+      setTimeout(() => setCopied(false), 2000);
+    }).catch(() => {
+      toast.error("Failed to copy URL");
+    });
   };
 
   return (
