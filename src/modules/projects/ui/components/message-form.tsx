@@ -52,7 +52,7 @@ export const MessageForm = ({ projectId }: Props) => {
       onError: (error) => {
         // Redirect to the pricing page
         toast.error(error.message);
-        if(error.data?.code === "TOO_MANY_REQUESTS") {
+        if (error.data?.code === "TOO_MANY_REQUESTS") {
           router.push("/pricing");
         }
       },
