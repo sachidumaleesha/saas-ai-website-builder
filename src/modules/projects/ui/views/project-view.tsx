@@ -28,8 +28,8 @@ interface Props {
 
 export const ProjectView = ({ projectId }: Props) => {
   const { has } = useAuth();
-  const hasProAccess = has?.({ plan: "pro" });
-  const hasPremiumAccess = has?.({ plan: "premium" });
+  const hasProAccess = has?.({ plan: "pro" }) ?? false;
+  const hasPremiumAccess = has?.({ plan: "premium" }) ?? false;
 
   const [activeFragment, setActiveFragment] = useState<Fragment | null>(null);
   const [tabState, setTabState] = useState<"preview" | "code">("preview");
