@@ -51,15 +51,6 @@ export const FragmentWeb = ({ data }: Props) => {
             <span className="truncate">{data.sandBoxUrl}</span>
           </Button>
         </Hint>
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={handleCopy}
-          disabled={!data.sandBoxUrl || copied}
-          className="flex-1 justify-start text-start font-normal"
-        >
-          <span className="truncate">{data.sandBoxUrl}</span>
-        </Button>
         <Hint text="Open in new tab" side="bottom" align="start">
           <Button
             size="sm"
