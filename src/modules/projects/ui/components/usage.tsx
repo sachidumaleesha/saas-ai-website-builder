@@ -2,7 +2,7 @@ import { useAuth } from "@clerk/nextjs";
 
 import Link from "next/link";
 import { CrownIcon } from "lucide-react";
-import { formatDuration, intervalToDuration } from "date-fns";
+import { format, formatDuration, intervalToDuration } from "date-fns";
 
 import { Button } from "@/components/ui/button";
 
@@ -20,9 +20,25 @@ export const Usage = ({ points, msBeforeNext }: Props) => {
     <div className="rounded-t-xl bg-background border border-b-0 p-2.5">
       <div className="flex items-center gap-x-2">
         <div>
-          <p className="text-sm">{points} {hasPremiumAccess ? "" : hasProAccess ? "" : "Free"} Credits Remaining</p>
+          <p className="text-sm">
+            {points} {hasPremiumAccess ? "" : hasProAccess ? "" : "Free"}{" "}
+            Credits Remaining
+          </p>
           <p className="text-xs text-muted-foreground">
             Resets in{" "}
+            {/* {(() => {
+              try {
+                const duration = intervalToDuration({
+                  start: new Date(),
+                  end: new Date(Date.now() + msBeforeNext),
+                });
+                return formatDuration(duration, {
+                  format: ["months", "days", "hours"],
+                });
+              } catch (error) {
+                return "soon";
+              }
+            })()} */}
             {formatDuration(
               intervalToDuration({
                 start: new Date(),
