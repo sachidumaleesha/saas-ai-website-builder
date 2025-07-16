@@ -1,7 +1,9 @@
 import z from "zod";
+import { prisma } from "@/lib/db";
 import { generateSlug } from "random-word-slugs";
 import { inngest } from "@/inngest/client";
-import { prisma } from "@/lib/db";
+import { getUsageStatus } from "@/lib/usage";
+
 import { protectedProcedure, createTRPCRouter } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
 
@@ -48,6 +50,15 @@ export const projectRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input, ctx }) => {
+      const { remainingPoints } = await getUsageStatus(ctx.auth.userId);
+
+      if (remainingPoints <= 0) {
+        throw new TRPCError({
+          code: "TOO_MANY_REQUESTS",
+          message: "You have run out of credits. Please upgrade your plan.",
+        });
+      }
+
       const createdProject = await prisma.project.create({
         data: {
           userId: ctx.auth.userId,
@@ -69,6 +80,7 @@ export const projectRouter = createTRPCRouter({
         data: {
           value: input.value,
           projectId: createdProject.id,
+          userId: ctx.auth.userId,
         },
       });
 
