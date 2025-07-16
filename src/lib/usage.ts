@@ -35,6 +35,11 @@ export async function consumeCredits(userId: string) {
     throw new Error("User not authenticated");
   }
 
+  if(GENERATION_COST <= 0){
+    console.log("❌ Generation cost is less than or equal to 0");
+    throw new Error("Invalid generation cost configuration");
+  }
+
   console.log("🔍 Creating usage tracker");
   const usageTracker = await getUsageTracker();
 
