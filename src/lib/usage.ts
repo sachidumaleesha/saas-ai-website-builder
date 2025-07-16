@@ -15,14 +15,23 @@ export async function getUsageTracker() {
   const hasProAccess = has({ plan: "pro" });
   const hasPremiumAccess = has({ plan: "premium" });
 
-  const usageTracker = new RateLimiterPrisma({
-    storeClient: prisma,
-    tableName: "Usage",
-    points: hasPremiumAccess ? PREMIUM_POINTS : hasProAccess ? PRO_POINTS : FREE_POINTS,
-    duration: DURATION,
-  });
+  try {
+    const usageTracker = new RateLimiterPrisma({
+      storeClient: prisma,
+      tableName: "Usage",
+      points: hasPremiumAccess
+        ? PREMIUM_POINTS
+        : hasProAccess
+        ? PRO_POINTS
+        : FREE_POINTS,
+      duration: DURATION,
+    });
 
-  return usageTracker;
+    return usageTracker;
+  } catch (error) {
+    console.log("❌ Error creating usage tracker:", error);
+    throw new Error(`Failed to initialize usage tracker: ${error}`);
+  }
 }
 
 export async function consumeCredits(userId: string) {
@@ -35,7 +44,7 @@ export async function consumeCredits(userId: string) {
     throw new Error("User not authenticated");
   }
 
-  if(GENERATION_COST <= 0){
+  if (GENERATION_COST <= 0) {
     console.log("❌ Generation cost is less than or equal to 0");
     throw new Error("Invalid generation cost configuration");
   }
@@ -79,7 +88,11 @@ export async function getUsageStatus(userId: string) {
     if (result === null) {
       console.log("🔍 No usage record found, returning default values");
       return {
-        remainingPoints: hasPremiumAccess ? PREMIUM_POINTS : hasProAccess ? PRO_POINTS : FREE_POINTS,
+        remainingPoints: hasPremiumAccess
+          ? PREMIUM_POINTS
+          : hasProAccess
+          ? PRO_POINTS
+          : FREE_POINTS,
         msBeforeNext: DURATION * 1000, // Convert seconds to milliseconds
       };
     }
