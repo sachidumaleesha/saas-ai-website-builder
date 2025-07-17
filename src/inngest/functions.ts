@@ -17,7 +17,13 @@ import {
 } from "@inngest/agent-kit";
 
 import { PROMPT, FRAGMENT_TITLE_PROMPT, RESPONSE_PROMPT } from "@/prompt";
-import { getSandbox, lastAssistantTextMessageContent, parseAgentOutput } from "./utils";
+import {
+  getSandbox,
+  lastAssistantTextMessageContent,
+  parseAgentOutput,
+} from "./utils";
+
+import { SANDBOX_TIMEOUT } from "./types";
 
 interface AgentState {
   summary: string;
@@ -30,6 +36,7 @@ export const codeAgentFunction = inngest.createFunction(
   async ({ event, step }) => {
     const sandboxId = await step.run("get-sandbox-id", async () => {
       const sandbox = await Sandbox.create("vibe-nextjs-sandbox4");
+      await sandbox.setTimeout(SANDBOX_TIMEOUT);
       return sandbox.sandboxId;
     });
 
@@ -44,7 +51,7 @@ export const codeAgentFunction = inngest.createFunction(
           orderBy: {
             createdAt: "desc",
           },
-          take: 10,
+          take: 5,
         });
 
         for (const message of messages) {
@@ -55,7 +62,7 @@ export const codeAgentFunction = inngest.createFunction(
           });
         }
 
-        return formatedMessages;
+        return formatedMessages.reverse();
       }
     );
 
@@ -151,7 +158,7 @@ export const codeAgentFunction = inngest.createFunction(
         return await step?.run("readFiles", async () => {
           try {
             const sandbox = await getSandbox(sandboxId);
-            const contents = [];
+            const contents: { path: string; content: string }[] = [];
 
             for (const file of files) {
               const content = await sandbox.files.read(file);
