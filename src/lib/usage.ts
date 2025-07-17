@@ -93,7 +93,7 @@ export async function getUsageStatus(userId: string) {
           : hasProAccess
           ? PRO_POINTS
           : FREE_POINTS,
-        msBeforeNext: DURATION * 1000, // Convert seconds to milliseconds
+        msBeforeNext: DURATION * 1000,
       };
     }
 
