@@ -8,8 +8,8 @@ import "prismjs/components/prism-tsx";
 import "./code-theme.css";
 
 interface Props {
-  code: String;
-  lang: String;
+  code: string;
+  lang: string;
 }
 
 export const CodeView = ({ code, lang }: Props) => {
