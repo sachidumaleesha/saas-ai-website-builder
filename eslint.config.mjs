@@ -15,6 +15,9 @@ const eslintConfig = [
     "next/typescript",
     "@typescript-eslint/no-unused-vars"
   ),
+  {
+    ignores: ["**/generated/*"]
+  }
 ];
 
 export default eslintConfig;
