@@ -10,8 +10,8 @@
 # import { Sandbox } from 'e2b'
 # const sandbox = await Sandbox.create('vibe-nextjs-sandbox4')
 
-team_id = "337b2dad-7a95-4116-a11b-6be07c5d2c6f"
+team_id = ""
 start_cmd = "/compile_page.sh"
 dockerfile = "e2b.Dockerfile"
 template_name = "vibe-nextjs-sandbox4"
-template_id = "zhuk985npids3hrotfqp"
+template_id = ""
